@@ -1,10 +1,12 @@
-package com.xh.easy.trafficreplay.service.method;
+package com.xh.easy.trafficreplay.service.core.allocator;
 
 import com.xh.easy.trafficreplay.service.annotation.ParameterAllocation;
 import com.xh.easy.trafficreplay.service.annotation.ParameterValue;
+import com.xh.easy.trafficreplay.service.core.handler.MethodInfo;
 import com.xh.easy.trafficreplay.service.util.PrimitiveUtil;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Objects;
 
@@ -13,13 +15,12 @@ import java.util.Objects;
  *
  * @author yixinhai
  */
-public class ParameterAllocator {
+public class ParameterAllocator extends Allocator {
 
-    private final MethodInfo methodInfo;
     private Object[] args;
 
-    private ParameterAllocator(MethodInfo methodInfo) {
-        this.methodInfo = methodInfo;
+    public ParameterAllocator(MethodInfo methodInfo) {
+        super(methodInfo);
     }
 
     public static ParameterAllocator of(MethodInfo methodInfo) {
@@ -29,8 +30,8 @@ public class ParameterAllocator {
     /**
      * 分配参数
      */
-    public void allocateParameter() throws IllegalAccessException {
-
+    @Override
+    public void allocate() throws IllegalAccessException {
         Parameter[] parameters = methodInfo.getMethod().getParameters();
         if (parameters == null || parameters.length == 0) {
             this.allocateComplete();
@@ -91,7 +92,6 @@ public class ParameterAllocator {
                 this.allocateComplete();
             }
         }
-
     }
 
     /**
@@ -140,7 +140,15 @@ public class ParameterAllocator {
     }
 
     private void allocateComplete() {
-        methodInfo.setArgs(args);
-        methodInfo.accept();
+        this.accept();
+    }
+
+    @Override
+    public Object invoke() throws Exception {
+
+        Object target = methodInfo.getTarget();
+        Method method = methodInfo.getMethod();
+
+        return method.invoke(target, args);
     }
 }

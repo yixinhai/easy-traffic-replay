@@ -13,5 +13,8 @@ public class Test {
 
     @ParameterValue(value = "yixinhai")
     private String username;
-    private int age;
+    @ParameterValue(value = "1")
+    private int gender;
+    @ParameterValue(value = "18")
+    private Integer age;
 }

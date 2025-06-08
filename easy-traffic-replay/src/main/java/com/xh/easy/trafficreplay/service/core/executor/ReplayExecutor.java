@@ -1,8 +1,9 @@
-package com.xh.easy.trafficreplay.service;
+package com.xh.easy.trafficreplay.service.core.executor;
 
-import com.xh.easy.trafficreplay.service.method.MethodInfo;
+import com.xh.easy.trafficreplay.service.core.allocator.Allocator;
+import com.xh.easy.trafficreplay.service.core.handler.MethodHandler;
 import com.xh.easy.trafficreplay.service.manager.MethodManager;
-import com.xh.easy.trafficreplay.service.method.ParameterAllocator;
+import com.xh.easy.trafficreplay.service.core.allocator.ParameterAllocator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,20 +35,23 @@ public class ReplayExecutor extends Visitor {
         methodManager.getMethodMap()
             .forEach((key, methodInfo) -> {
                 try {
-                    ParameterAllocator.of(methodInfo).allocateParameter();
-                } catch (IllegalAccessException e) {
+                    // 参数增强器
+                    Allocator allocator = ParameterAllocator.of(methodInfo);
+
+                    allocator.allocate();
+                } catch (Exception e) {
                     log.error("Failed to allocate parameter for method: {}", methodInfo, e);
                 }
             });
     }
 
     @Override
-    public void visit(MethodInfo methodInfo) {
+    public void visit(MethodHandler handler) {
         try {
-            Object o = methodInfo.invoke();
-            log.info("Successfully executed method: {}, result: {}", methodInfo, o);
+            Object o = handler.invoke();
+            log.info("Successfully executed method: {}, result: {}", handler, o);
         } catch (Exception e) {
-            log.error("Failed to execute method: {}", methodInfo, e);
+            log.error("Failed to execute method: {}", handler, e);
             // TODO 告警
         }
     }

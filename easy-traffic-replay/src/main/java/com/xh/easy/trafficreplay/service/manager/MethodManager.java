@@ -1,7 +1,7 @@
 package com.xh.easy.trafficreplay.service.manager;
 
-import com.xh.easy.trafficreplay.service.method.MethodInfo;
-import com.xh.easy.trafficreplay.service.method.MethodSignature;
+import com.xh.easy.trafficreplay.service.core.handler.MethodInfo;
+import com.xh.easy.trafficreplay.service.model.MethodSignature;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
