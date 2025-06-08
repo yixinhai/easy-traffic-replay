@@ -1,7 +1,5 @@
 package com.xh.easy.trafficreplay.service.util;
 
-import lombok.AllArgsConstructor;
-
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -60,20 +58,22 @@ public class PrimitiveUtil {
 
 
     private enum PrimitiveType {
-        INTEGER(Integer.class, Integer::parseInt),
-        LONG(Long.class, Long::parseLong),
-        FLOAT(Float.class, Float::parseFloat),
-        DOUBLE(Double.class, Double::parseDouble),
-        BOOLEAN(Boolean.class, Boolean::parseBoolean),
-        CHAR(Character.class, s -> s.charAt(0)),
-        BYTE(Byte.class, Byte::parseByte),
-        SORT(Short.class, Short::parseShort);
+        INTEGER(int.class, Integer.class, Integer::parseInt),
+        LONG(long.class, Long.class, Long::parseLong),
+        FLOAT(float.class, Float.class, Float::parseFloat),
+        DOUBLE(double.class, Double.class, Double::parseDouble),
+        BOOLEAN(boolean.class, Boolean.class, Boolean::parseBoolean),
+        CHAR(char.class, Character.class, s -> s.charAt(0)),
+        BYTE(byte.class, Byte.class, Byte::parseByte),
+        SHORT(short.class, Short.class, Short::parseShort);
 
-        private final Class<?> type;
+        private final Class<?> primitiveType;
+        private final Class<?> wrapperType;
         private final Function<String, ?> converter;
 
-        PrimitiveType(Class<?> type, Function<String, ?> converter) {
-            this.type = type;
+        PrimitiveType(Class<?> primitiveType, Class<?> wrapperType, Function<String, ?> converter) {
+            this.primitiveType = primitiveType;
+            this.wrapperType = wrapperType;
             this.converter = converter;
         }
 
@@ -89,7 +89,7 @@ public class PrimitiveUtil {
             }
 
             for (PrimitiveType primitiveType : values()) {
-                if (Objects.equals(primitiveType.type, type)) {
+                if (primitiveType.primitiveType.equals(type) || primitiveType.wrapperType.equals(type)) {
                     return primitiveType;
                 }
             }
