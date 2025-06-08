@@ -71,6 +71,10 @@ service/
     └── PrimitiveUtil.java      # 基本类型工具
 ```
 
+#### 3. Service 核心类图
+![image](https://github.com/user-attachments/assets/271ff48d-4254-4229-ac55-c3de4c0ee75a)
+
+
 ### 1. 核心功能
 
 1. **方法级流量回放**
