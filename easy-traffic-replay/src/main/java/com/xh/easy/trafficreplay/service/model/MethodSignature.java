@@ -1,4 +1,4 @@
-package com.xh.easy.trafficreplay.service.method;
+package com.xh.easy.trafficreplay.service.model;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -1,4 +1,4 @@
-package com.xh.easy.trafficreplay.service.apollo;
+package com.xh.easy.trafficreplay.service.manager;
 
 import lombok.Getter;
 import org.springframework.stereotype.Component;
