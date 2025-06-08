@@ -27,16 +27,48 @@ Easy Traffic Replay 是一个轻量级的流量回放工具，用于模拟和重
 
 ## 项目结构
 
+#### 1. 整体项目结构
 ```
-src/main/java/com/xh/easy/trafficreplay/
-├── agent/          # 代理相关实现
-├── service/        # 核心服务实现
-│   ├── annotation/ # 注解定义
-│   ├── apollo/     # Apollo 配置集成
-│   ├── manager/    # 管理器实现
-│   ├── method/     # 方法处理相关
-│   └── util/       # 工具类
-└── EasyTrafficReplayApplication.java
+easy-traffic-replay/
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/xh/easy/trafficreplay/
+│   │   │       ├── agent/        # 代理相关代码
+│   │   │       ├── service/      # 服务层代码
+│   │   │       └── EasyTrafficReplayApplication.java
+│   │   └── resources/
+│   └── test/
+```
+
+#### 2. Service 包详细结构
+```
+service/
+├── model/                 # 数据模型
+│   └── MethodSignature.java  # 方法签名模型
+├── core/                 # 核心功能实现
+│   ├── executor/         # 执行器
+│   │   ├── ReplayExecutor.java  # 回放执行器
+│   │   └── Visitor.java        # 访问者接口
+│   ├── handler/          # 处理器
+│   │   ├── MethodHandler.java  # 方法处理器
+│   │   ├── MethodInfo.java     # 方法信息
+│   │   └── MethodInvoker.java  # 方法调用器
+│   └── allocator/        # 分配器
+│       ├── Allocator.java      # 分配器接口
+│       └── ParameterAllocator.java  # 参数分配器
+├── manager/              # 管理器
+│   ├── ApolloConfigs.java     # Apollo配置
+│   ├── MethodManager.java     # 方法管理器
+│   └── ReplayConfig.java      # 回放配置
+├── annotation/           # 注解
+│   ├── ParameterAllocation.java  # 参数分配注解
+│   └── ParameterValue.java       # 参数值注解
+├── test/                 # 测试相关
+│   ├── Test.java
+│   └── TestAssemble.java
+└── util/                 # 工具类
+    └── PrimitiveUtil.java      # 基本类型工具
 ```
 
 ### 1. 核心功能
