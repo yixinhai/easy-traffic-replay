@@ -1,6 +1,6 @@
 package com.xh.easy.trafficreplay;
 
-import com.xh.easy.trafficreplay.service.ReplayExecutor;
+import com.xh.easy.trafficreplay.service.core.executor.ReplayExecutor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
