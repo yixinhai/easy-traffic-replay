@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 
+import static com.xh.easy.trafficreplay.service.constant.LogStrConstant.LOG_STR;
+
 /**
  * 方法签名
  *
@@ -104,7 +106,7 @@ public class MethodSignature {
 
             return new MethodSignature(className, methodName, paramTypes);
         } catch (Exception e) {
-            log.error("Failed to parse method signature: {}", signature, e);
+            log.error("{} Failed to parse method signature: {}", LOG_STR, signature, e);
             return null;
         }
     }

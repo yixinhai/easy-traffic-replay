@@ -7,6 +7,7 @@ replay:
     - com.xh.easy.trafficreplay.service.test.TestAssemble#test01()
     - com.xh.easy.trafficreplay.service.test.TestAssemble#test02(java.lang.String)
     - com.xh.easy.trafficreplay.service.test.TestAssemble#test03(java.lang.String, com.xh.easy.trafficreplay.service.test.Test)
+    - com.xh.easy.trafficreplay.service.test.TestAssemble#test04(java.lang.Integer)
   apollo:
     enabled: false
     key: ass_traffic_replay

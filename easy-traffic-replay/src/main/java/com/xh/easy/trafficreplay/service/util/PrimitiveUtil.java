@@ -3,6 +3,8 @@ package com.xh.easy.trafficreplay.service.util;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.xh.easy.trafficreplay.service.constant.LogStrConstant.LOG_STR;
+
 /**
  * 基本类型处理器
  *
@@ -49,7 +51,7 @@ public class PrimitiveUtil {
         PrimitiveType primitiveType = PrimitiveType.of(type);
 
         if (primitiveType == null) {
-            throw new IllegalArgumentException("Unknown data type: " + type.getName());
+            throw new IllegalArgumentException(LOG_STR + "Unknown data type: " + type.getName());
         }
 
         return primitiveType.converter.apply(value);

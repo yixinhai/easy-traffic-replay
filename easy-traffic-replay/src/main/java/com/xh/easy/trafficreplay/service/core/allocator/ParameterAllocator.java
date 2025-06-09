@@ -4,6 +4,7 @@ import com.xh.easy.trafficreplay.service.annotation.ParameterAllocation;
 import com.xh.easy.trafficreplay.service.annotation.ParameterValue;
 import com.xh.easy.trafficreplay.service.core.handler.MethodInfo;
 import com.xh.easy.trafficreplay.service.util.PrimitiveUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 
@@ -12,11 +13,14 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Objects;
 
+import static com.xh.easy.trafficreplay.service.constant.LogStrConstant.LOG_STR;
+
 /**
  * 参数分配器
  *
  * @author yixinhai
  */
+@Slf4j
 public class ParameterAllocator extends Allocator {
 
     private final ParameterNameDiscoverer discoverer = new LocalVariableTableParameterNameDiscoverer();
@@ -52,7 +56,7 @@ public class ParameterAllocator extends Allocator {
 
             // 参数是logStr特殊处理
             if (String.class == parameter.getType() && "logStr".equals(parameterNames[i])) {
-                args[i] = "after.sale.traffic.replay-" + System.currentTimeMillis();
+                args[i] = LOG_STR;
                 this.allocateComplete();
                 continue;
             }

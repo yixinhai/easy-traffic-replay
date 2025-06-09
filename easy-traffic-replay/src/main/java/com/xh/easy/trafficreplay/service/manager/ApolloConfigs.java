@@ -2,7 +2,6 @@ package com.xh.easy.trafficreplay.service.manager;
 
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigService;
-import com.xh.easy.trafficreplay.service.constant.LogStrConstant;
 import com.xh.easy.trafficreplay.service.util.ApolloUtil;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +10,8 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.xh.easy.trafficreplay.service.constant.LogStrConstant.LOG_STR;
 
 /**
  * Apollo配置类
@@ -45,6 +46,8 @@ public class ApolloConfigs {
 
     @PostConstruct
     private void init() {
+        log.info("{} Initialize apollo configs", LOG_STR);
+
         if (!checkApolloEnabled()) {
             return;
         }
@@ -61,8 +64,8 @@ public class ApolloConfigs {
             changeListener(this::initApolloConfig);
 
         } catch (Exception e) {
-            log.error("{} Failed to initialize apollo configs", LogStrConstant.LOG_STR, e);
-            throw new RuntimeException("Failed to initialize apollo configs: Namespace not found", e);
+            log.error("{} Failed to initialize apollo configs", LOG_STR, e);
+            throw new RuntimeException(LOG_STR + "Failed to initialize apollo configs: Namespace not found", e);
         }
     }
 

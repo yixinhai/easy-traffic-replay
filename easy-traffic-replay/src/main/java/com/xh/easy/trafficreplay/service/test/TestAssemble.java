@@ -26,4 +26,8 @@ public class TestAssemble {
     public void test03(String logStr, Test test) {
         log.info("{} test03 test={}", logStr, test);
     }
+
+    public void test04(Integer num) {
+        log.info("test04 num={}", num);
+    }
 }

@@ -1,5 +1,6 @@
 package com.xh.easy.trafficreplay.service.manager;
 
+import com.alibaba.fastjson.JSON;
 import com.xh.easy.trafficreplay.service.core.handler.MethodInfo;
 import com.xh.easy.trafficreplay.service.model.MethodSignature;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import static com.xh.easy.trafficreplay.service.constant.LogStrConstant.LOG_STR;
 
 /**
  * 流量回放方法管理类
@@ -39,13 +42,10 @@ public class MethodManager {
     @Autowired
     private ApolloConfigs apolloConfigs;
 
-    public MethodManager() {
-        log.info("Initializing method manager...");
-    }
 
     @PostConstruct
     private void init() {
-        log.info("method manager init...");
+        log.info("{} Initialize method manager", LOG_STR);
 
         // 初始化回放方法信息
         initMethodMap();
@@ -58,6 +58,8 @@ public class MethodManager {
      * 初始化回放方法信息
      */
     private void initMethodMap() {
+        log.info("{} Initialize method information", LOG_STR);
+
         Set<String> methods = replayConfig.getRelayMethods();
         if (methods == null || methods.isEmpty()) {
             return;
@@ -72,7 +74,7 @@ public class MethodManager {
                 // 解析方法配置
                 MethodSignature signature = MethodSignature.parse(methodConfig);
                 if (signature == null) {
-                    log.error("Invalid method configuration: {}", methodConfig);
+                    log.error("{} Invalid method configuration: {}", LOG_STR, methodConfig);
                     continue;
                 }
 
@@ -82,23 +84,25 @@ public class MethodManager {
                 // 查找对应的Spring Bean
                 Object target = findBeanByClass(targetClass);
                 if (target == null) {
-                    log.error("No Spring bean found for class: {}", signature.getClassName());
+                    log.error("{} No Spring bean found for class: {}", LOG_STR, signature.getClassName());
                     continue;
                 }
 
                 // 获取方法
                 Method method = findMethod(targetClass, signature);
                 if (method == null) {
-                    log.error("Method not found: {} in class: {}", methodConfig, signature.getClassName());
+                    log.error("{} Method not found: {} in class: {}", LOG_STR, methodConfig, signature.getClassName());
                     continue;
                 }
 
                 // 存储方法信息
                 methodMap.put(methodConfig, new MethodInfo(target, method));
             } catch (Exception e) {
-                log.error("Failed to initialize method: {}", methodConfig, e);
+                log.error("{} Failed to initialize method: {}", LOG_STR, methodConfig, e);
             }
         }
+
+        log.info("{} Initialized {} methods methods={}", LOG_STR, methodMap.size(), JSON.toJSONString(methodMap));
     }
 
     /**
@@ -123,7 +127,7 @@ public class MethodManager {
                     try {
                         return Class.forName(paramType);
                     } catch (ClassNotFoundException e) {
-                        log.error("Parameter type not found: {}", paramType);
+                        log.error("{} Parameter type not found: {}", LOG_STR, paramType);
                         return null;
                     }
                 })
@@ -137,8 +141,7 @@ public class MethodManager {
 
             return method;
         } catch (NoSuchMethodException e) {
-            log.error("Method not found: {} with parameters: {}",
-                signature.getMethodName(),
+            log.error("{} Method not found: {} with parameters: {}", LOG_STR, signature.getMethodName(),
                 Arrays.toString(signature.getParamTypes()));
             return null;
         }
