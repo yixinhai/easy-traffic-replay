@@ -106,33 +106,69 @@ service/
 </dependency>
 ```
 
-#### 2.2 配置回放方法
+#### 2.2 配置目标方法
 
-在 `application.yml` 中配置需要回放的方法：
+##### 方式一：通过配置文件
+
+在`application.yaml`中配置：
 
 ```yaml
 replay:
   methods:
-    - com.example.service.UserService#getUserInfo(java.lang.String)
-    - com.example.service.OrderService#createOrder(com.example.entity.Order)
+    - com.example.service.TestService#method1()
+    - com.example.service.TestService#method2(java.lang.String)
+    - com.example.service.TestService#method3(java.lang.String, com.example.model.User)
 ```
 
-或者通过 Apollo 配置中心配置：
+##### 方式二：通过Apollo配置中心
 
-```properties
-traffic.relay.methods=com.example.service.UserService#getUserInfo(java.lang.String)
+1. 在`application.yaml`中启用Apollo配置：
+
+```yaml
+replay:
+  apollo:
+    enabled: true
+    key: your_config_key
+    namespace: application
 ```
 
-#### 2.3 使用注解标记参数
+2. 在Apollo配置中心添加配置：
+   - Key: `your_config_key`
+   - Value: 方法列表（JSON数组格式）
+   ```json
+   [
+     "com.example.service.TestService#method1()",
+     "com.example.service.TestService#method2(java.lang.String)"
+   ]
+   ```
 
+#### 2.3. 参数配置
+
+##### 基本类型参数
+
+基本类型参数会自动分配默认值：
+- 数值类型：0
+- 布尔类型：false
+
+##### 复杂对象参数
+
+1. 在类上添加`@ParameterAllocation`注解：
 ```java
 @ParameterAllocation
-public class UserRequest {
-    @ParameterValue("defaultUser")
-    private String username;
+public class User {
+    // ...
+}
+```
+
+2. 在需要设置默认值的字段上添加`@ParameterValue`注解：
+```java
+@ParameterAllocation
+public class User {
+    @ParameterValue("defaultName")
+    private String name;
     
-    @ParameterValue("123456")
-    private String password;
+    @ParameterValue("18")
+    private Integer age;
 }
 ```
 
