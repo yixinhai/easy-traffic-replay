@@ -27,10 +27,12 @@ public class MethodInfo extends MethodHandler {
         visitor.visit(this);
     }
 
+    @Override
     public Object getTarget() {
         return target;
     }
 
+    @Override
     public Method getMethod() {
         return method;
     }
@@ -38,10 +40,5 @@ public class MethodInfo extends MethodHandler {
     @Override
     public String toString() {
         return "MethodInfo{" + "target=" + target + ", method=" + method + '}';
-    }
-
-    @Override
-    public Object invoke() throws Exception {
-        return super.invoke();
     }
 }

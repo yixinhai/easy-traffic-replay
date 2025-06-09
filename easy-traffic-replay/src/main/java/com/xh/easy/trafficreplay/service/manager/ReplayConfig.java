@@ -25,7 +25,7 @@ public class ReplayConfig {
      */
     private Set<String> methods;
 
-    public Set<String> getMethods() {
+    public Set<String> getRelayMethods() {
         Set<String> methodSet = new HashSet<>(methods);
         methodSet.addAll(this.getTrafficRelayMethods());
         return methodSet;
