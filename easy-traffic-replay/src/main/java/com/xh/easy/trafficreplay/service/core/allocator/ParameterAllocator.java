@@ -4,6 +4,8 @@ import com.xh.easy.trafficreplay.service.annotation.ParameterAllocation;
 import com.xh.easy.trafficreplay.service.annotation.ParameterValue;
 import com.xh.easy.trafficreplay.service.core.handler.MethodInfo;
 import com.xh.easy.trafficreplay.service.util.PrimitiveUtil;
+import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
+import org.springframework.core.ParameterNameDiscoverer;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -17,6 +19,8 @@ import java.util.Objects;
  */
 public class ParameterAllocator extends Allocator {
 
+    private final ParameterNameDiscoverer discoverer = new LocalVariableTableParameterNameDiscoverer();
+    private boolean hasAllocated = false;
     private Object[] args;
 
     public ParameterAllocator(MethodInfo methodInfo) {
@@ -43,9 +47,11 @@ public class ParameterAllocator extends Allocator {
         for (int i = 0; i < parameters.length; i++) {
             Parameter parameter = parameters[i];
             Class<?> parameterClass = parameter.getType();
+            String[] parameterNames = discoverer.getParameterNames(methodInfo.getMethod());
+            assert parameterNames != null && parameterNames.length > 0;
 
             // 参数是logStr特殊处理
-            if (String.class == parameter.getType() && "logStr".equals(parameter.getName())) {
+            if (String.class == parameter.getType() && "logStr".equals(parameterNames[i])) {
                 args[i] = "after.sale.traffic.replay-" + System.currentTimeMillis();
                 this.allocateComplete();
                 continue;
@@ -91,6 +97,10 @@ public class ParameterAllocator extends Allocator {
                 }
                 this.allocateComplete();
             }
+        }
+
+        if (!this.hasAllocated) {
+            this.allocateComplete();
         }
     }
 
@@ -140,6 +150,7 @@ public class ParameterAllocator extends Allocator {
     }
 
     private void allocateComplete() {
+        this.hasAllocated = true;
         this.accept();
     }
 

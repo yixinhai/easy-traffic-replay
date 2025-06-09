@@ -83,12 +83,6 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <!-- 保留原有的 exclude 配置，避免 Lombok 被打包到最终应用 -->
-            </plugin>
         </plugins>
     </build>
 

@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.xh.easy.trafficreplay.service.core.executor.ReplayExecutor, \
+  com.xh.easy.trafficreplay.service.manager.ApplicationConfigImporter, \
+  com.xh.easy.trafficreplay.service.manager.MethodManager

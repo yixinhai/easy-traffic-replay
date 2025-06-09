@@ -6,9 +6,6 @@ import com.xh.easy.trafficreplay.service.constant.LogStrConstant;
 import com.xh.easy.trafficreplay.service.util.ApolloUtil;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -22,8 +19,6 @@ import java.util.Optional;
  */
 @Slf4j
 @Setter
-@Configuration
-@ConfigurationProperties(prefix = "replay.apollo")
 public class ApolloConfigs {
 
     private Config config;
