@@ -12,6 +12,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 流量回放方法管理类
@@ -35,6 +36,9 @@ public class MethodManager {
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Autowired
+    private ApolloConfigs apolloConfigs;
+
     public MethodManager() {
         log.info("Initializing method manager...");
     }
@@ -42,11 +46,24 @@ public class MethodManager {
     @PostConstruct
     private void init() {
         log.info("method manager init...");
-        if (replayConfig.getMethods() == null || replayConfig.getMethods().isEmpty()) {
+
+        // 初始化回放方法信息
+        initMethodMap();
+
+        // 监听apollo配置变更，重新初始化方法信息
+        apolloConfigs.changeListener(this::initMethodMap);
+    }
+
+    /**
+     * 初始化回放方法信息
+     */
+    private void initMethodMap() {
+        Set<String> methods = replayConfig.getRelayMethods();
+        if (methods == null || methods.isEmpty()) {
             return;
         }
 
-        for (String methodConfig : replayConfig.getMethods()) {
+        for (String methodConfig : methods) {
             try {
                 if (methodMap.get(methodConfig) != null) {
                     continue;
@@ -130,14 +147,4 @@ public class MethodManager {
     public Map<String, MethodInfo> getMethodMap() {
         return this.methodMap;
     }
-
-    /**
-     * 监听Apollo配置变更
-     */
-    //    @ApolloConfigChangeListener("application")
-//    public void onChange(ConfigChangeEvent event) {
-//        if (event.isChanged("ass_traffic_replay")) {
-//            this.init();
-//        }
-//    }
 }
