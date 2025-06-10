@@ -61,7 +61,7 @@ public class ApolloConfigs {
             // 初始化流量回放方法
             initTrafficRelayMethods();
             // 监听流量回放配置变化
-            changeListener(this::initApolloConfig);
+            changeListener(this::initTrafficRelayMethods);
 
         } catch (Exception e) {
             log.error("{} Failed to initialize apollo configs", LOG_STR, e);
