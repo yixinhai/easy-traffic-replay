@@ -31,7 +31,7 @@ public class MethodManager {
      * key: 方法标识（类名#方法名(参数类型列表)）
      * value: 方法信息（包含目标对象和方法）
      */
-    private final Map<String, MethodInfo> methodMap = new HashMap<>();
+    private Map<String, MethodInfo> methodMap;
 
     @Autowired
     private ReplayConfig replayConfig;
@@ -59,6 +59,8 @@ public class MethodManager {
      */
     private void initMethodMap() {
         log.info("{} Initialize method information", LOG_STR);
+
+        methodMap = new HashMap<>();
 
         Set<String> methods = replayConfig.getRelayMethods();
         if (methods == null || methods.isEmpty()) {
