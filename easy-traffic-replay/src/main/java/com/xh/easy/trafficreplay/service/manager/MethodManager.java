@@ -1,8 +1,8 @@
 package com.xh.easy.trafficreplay.service.manager;
 
-import com.alibaba.fastjson.JSON;
 import com.xh.easy.trafficreplay.service.core.handler.MethodInfo;
 import com.xh.easy.trafficreplay.service.model.MethodSignature;
+import com.xh.easy.trafficreplay.service.util.ClassWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -86,7 +86,7 @@ public class MethodManager {
                 // 查找对应的Spring Bean
                 Object target = findBeanByClass(targetClass);
                 if (target == null) {
-                    log.error("{} No Spring bean found for class: {}", LOG_STR, signature.getClassName());
+                    log.error("{} Class not found for class: {}", LOG_STR, signature.getClassName());
                     continue;
                 }
 
@@ -104,18 +104,67 @@ public class MethodManager {
             }
         }
 
-        log.info("{} Initialized {} methods methods={}", LOG_STR, methodMap.size(), JSON.toJSONString(methodMap));
+        log.info("{} Initialized {} methods", LOG_STR, methodMap.size());
     }
 
     /**
-     * 根据类查找对应的Spring Bean
+     * 根据类查找对应的实例
+     * 优先从Spring容器中获取Bean，如果不存在则创建新实例
+     *
+     * @param targetClass 目标类
+     * @return 目标类的实例，如果创建失败则返回null
      */
     private Object findBeanByClass(Class<?> targetClass) {
-        String[] beanNames = applicationContext.getBeanNamesForType(targetClass);
-        if (beanNames.length > 0) {
-            return applicationContext.getBean(beanNames[0]);
+        if (targetClass == null) {
+            log.warn("{} Target class is null", LOG_STR);
+            return null;
+        }
+
+        // 1. 优先从Spring容器获取Bean
+        Object instance = getBeanFromSpringContainer(targetClass);
+        if (instance != null) {
+            return instance;
+        }
+
+        // 2. 如果Spring容器中不存在，则创建新实例
+        return createNewInstance(targetClass);
+    }
+
+    /**
+     * 从Spring容器中获取Bean
+     *
+     * @param targetClass 目标类
+     * @return Spring容器中的Bean实例，如果不存在则返回null
+     */
+    private Object getBeanFromSpringContainer(Class<?> targetClass) {
+        try {
+            String[] beanNames = applicationContext.getBeanNamesForType(targetClass);
+            if (beanNames.length > 0) {
+                Object bean = applicationContext.getBean(beanNames[0]);
+                log.info("{} Found Spring bean for class: {}", LOG_STR, targetClass.getName());
+                return bean;
+            }
+        } catch (Exception e) {
+            log.warn("{} Failed to get bean from Spring container for class: {}", LOG_STR, targetClass.getName(), e);
         }
         return null;
+    }
+
+    /**
+     * 创建类的新实例
+     *
+     * @param targetClass 目标类
+     * @return 新创建的实例，如果创建失败则返回null
+     */
+    private Object createNewInstance(Class<?> targetClass) {
+        try {
+            Object instance = ClassWrapper.newInstance(targetClass);
+            log.info("{} Created new instance for class: {}", LOG_STR, targetClass.getName());
+            return instance;
+        } catch (Exception e) {
+            log.error("{} Failed to create instance for class: {}", LOG_STR, targetClass.getName(), e);
+            return null;
+        }
     }
 
     /**
@@ -136,12 +185,7 @@ public class MethodManager {
                 .toArray(Class<?>[]::new);
 
             // 查找匹配的方法
-            Method method = targetClass.getDeclaredMethod(signature.getMethodName(), paramTypes);
-
-            // 设置方法可访问
-            method.setAccessible(true);
-
-            return method;
+            return ClassWrapper.getAccessibelDeclaredMethod(targetClass, signature.getMethodName(), paramTypes);
         } catch (NoSuchMethodException e) {
             log.error("{} Method not found: {} with parameters: {}", LOG_STR, signature.getMethodName(),
                 Arrays.toString(signature.getParamTypes()));

@@ -128,8 +128,9 @@ public class ParameterAllocator extends Allocator {
                 return value == null || value.isEmpty() ? null : value;
             }
 
-            return clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            return clazz.getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            log.error("{} Failed to create an instance of class: {}", LOG_STR, clazz.getName(), e);
             throw new RuntimeException(e);
         }
     }
