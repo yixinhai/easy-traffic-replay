@@ -2,6 +2,9 @@ package com.xh.easy.trafficreplay.service.core.allocator.parameter;
 
 import com.xh.easy.trafficreplay.service.model.ParameterInfo;
 
+import java.util.Collections;
+import java.util.List;
+
 import static com.xh.easy.trafficreplay.service.constant.LogStrConstant.LOG_STR;
 
 /**
@@ -28,7 +31,7 @@ public class LogStrTransformer extends ParamTransformer {
     }
 
     @Override
-    public Object transform(ParameterInfo parameterInfo) {
-        return LOG_STR;
+    public List<Object> transform(ParameterInfo parameterInfo) {
+        return Collections.singletonList(LOG_STR);
     }
 }

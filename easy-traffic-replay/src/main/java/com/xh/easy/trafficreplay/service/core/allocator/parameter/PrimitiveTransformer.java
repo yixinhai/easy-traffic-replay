@@ -3,6 +3,9 @@ package com.xh.easy.trafficreplay.service.core.allocator.parameter;
 import com.xh.easy.trafficreplay.service.model.ParameterInfo;
 import com.xh.easy.trafficreplay.service.util.PrimitiveUtil;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * 基本类型参数分配策略
  *
@@ -25,7 +28,7 @@ public class PrimitiveTransformer extends ParamTransformer {
     }
 
     @Override
-    public Object transform(ParameterInfo parameterInfo) {
-        return PrimitiveUtil.getDefaultValue(parameterInfo.getParameterType());
+    public List<Object> transform(ParameterInfo parameterInfo) {
+        return Collections.singletonList(PrimitiveUtil.getDefaultValue(parameterInfo.getParameterType()));
     }
 }

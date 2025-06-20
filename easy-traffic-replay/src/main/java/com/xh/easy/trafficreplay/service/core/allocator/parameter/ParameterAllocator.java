@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * 参数分配器
@@ -38,13 +40,11 @@ public class ParameterAllocator extends Allocator {
         ParamTransformer logStrTransformer = LogStrTransformer.getInstance();
         ParamTransformer primitiveTransformer = PrimitiveTransformer.getInstance();
         ParamTransformer annotatedObjectTransformer = AnnotatedObjectTransformer.getInstance();
-        ParamTransformer defaultTransformer = DefaultTransformer.getInstance();
 
         // 按优先级排序
         jsonTransformer.setNext(logStrTransformer);
         logStrTransformer.setNext(primitiveTransformer);
         primitiveTransformer.setNext(annotatedObjectTransformer);
-        annotatedObjectTransformer.setNext(defaultTransformer);
 
         return jsonTransformer;
     }
@@ -65,9 +65,13 @@ public class ParameterAllocator extends Allocator {
         for (int i = 0; i < parameters.length; i++) {
             Parameter parameter = parameters[i];
 
-            // 使用策略管理器分配参数值
-            args[i] = transformer.doTransform(new ParameterInfo(methodInfo, parameter));
-            this.allocateComplete();
+            // 分配参数值
+            Iterator<Object> argumentIterator = transformer.doTransform(new ParameterInfo(methodInfo, parameter))
+                .iterator();
+            while (argumentIterator.hasNext()) {
+                args[i] = argumentIterator.next();
+                this.allocateComplete();
+            }
         }
 
         if (!this.hasAllocated) {

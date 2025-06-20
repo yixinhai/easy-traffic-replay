@@ -2,6 +2,8 @@ package com.xh.easy.trafficreplay.service.core.allocator.parameter;
 
 import com.xh.easy.trafficreplay.service.model.ParameterInfo;
 
+import java.util.List;
+
 /**
  * 参数分配策略接口
  *
@@ -23,7 +25,7 @@ public abstract class ParamTransformer {
      * @throws Exception
      *     转换异常
      */
-    protected Object doTransform(ParameterInfo parameterInfo) throws Exception {
+    protected List<Object> doTransform(ParameterInfo parameterInfo) throws Exception {
         return this.supports(parameterInfo) ? this.transform(parameterInfo) : next.doTransform(parameterInfo);
     }
 
@@ -35,7 +37,7 @@ public abstract class ParamTransformer {
      * @throws Exception
      *     转换异常
      */
-    abstract Object transform(ParameterInfo parameterInfo) throws Exception;
+    abstract List<Object> transform(ParameterInfo parameterInfo) throws Exception;
 
     /**
      * 判断是否支持处理该参数

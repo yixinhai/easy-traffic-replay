@@ -53,7 +53,15 @@ public class ParameterInfo {
         return methodHandler.getMethod();
     }
 
+    public String getMethodName() {
+    	return getMethod().getName();
+    }
+
     public boolean isPrimitive() {
         return parameter.getType().isPrimitive();
+    }
+
+    public Class<?> getTargetType() {
+    	return methodHandler.getTarget().getClass();
     }
 }
