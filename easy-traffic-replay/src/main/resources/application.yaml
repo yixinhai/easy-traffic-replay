@@ -4,14 +4,15 @@ spring:
 
 replay:
   methods:
-    - com.xh.easy.trafficreplay.service.test.TestAssemble#test01()
-    - com.xh.easy.trafficreplay.service.test.TestAssemble#test02(java.lang.String)
+#    - com.xh.easy.trafficreplay.service.test.TestAssemble#test01()
+#    - com.xh.easy.trafficreplay.service.test.TestAssemble#test02(java.lang.String)
     - com.xh.easy.trafficreplay.service.test.TestAssemble#test03(java.lang.String, com.xh.easy.trafficreplay.service.test.Test)
-    - com.xh.easy.trafficreplay.service.test.TestAssemble#test04(java.lang.Integer)
-    - com.xh.easy.trafficreplay.service.test.TestPOJO#test01()
-    - com.xh.easy.trafficreplay.service.test.TestPOJO#test02(java.lang.String)
-    - com.xh.easy.trafficreplay.service.test.TestPOJO#test03(java.lang.String, com.xh.easy.trafficreplay.service.test.Test)
-    - com.xh.easy.trafficreplay.service.test.TestPOJO#test04(java.lang.Integer)
+#    - com.xh.easy.trafficreplay.service.test.TestAssemble#test04(java.lang.Integer)
+#    - com.xh.easy.trafficreplay.service.test.TestAssemble#test05(java.lang.String, java.util.List)
+#    - com.xh.easy.trafficreplay.service.test.TestPOJO#test01()
+#    - com.xh.easy.trafficreplay.service.test.TestPOJO#test02(java.lang.String)
+#    - com.xh.easy.trafficreplay.service.test.TestPOJO#test03(java.lang.String, com.xh.easy.trafficreplay.service.test.Test)
+#    - com.xh.easy.trafficreplay.service.test.TestPOJO#test04(java.lang.Integer)
   apollo:
     enabled: false
     key: ass_traffic_replay

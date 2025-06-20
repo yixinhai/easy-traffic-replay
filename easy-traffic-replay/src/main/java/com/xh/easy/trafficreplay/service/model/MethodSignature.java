@@ -99,10 +99,10 @@ public class MethodSignature {
             }
 
             // 解析参数类型
-            String[] paramTypes = paramString == null || paramString.isEmpty() ? new String[0] : Arrays.stream(
-                paramString.split(","))
-                .map(String::trim)
-                .toArray(String[]::new);
+            String[] paramTypes = paramString == null || paramString.isEmpty() ? new String[0]
+                : Arrays.stream(paramString.split(","))
+                    .map(String::trim)
+                    .toArray(String[]::new);
 
             return new MethodSignature(className, methodName, paramTypes);
         } catch (Exception e) {

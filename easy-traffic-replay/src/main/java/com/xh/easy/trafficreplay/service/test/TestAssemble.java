@@ -3,6 +3,8 @@ package com.xh.easy.trafficreplay.service.test;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @author yixinhai
  */
@@ -13,6 +15,7 @@ public class TestAssemble {
     /**
      * com.xh.easy.trafficreplay.service.test.TestAssemble#test01()
      * com.xh.easy.trafficreplay.service.test.TestAssemble#test03(java.lang.String, com.xh.easy.trafficreplay.service.test.Test)
+     * com.xh.easy.trafficreplay.service.test.TestAssemble#test05(java.lang.String, java.util.List)
      *
      */
     public void test01() {
@@ -29,5 +32,9 @@ public class TestAssemble {
 
     public void test04(Integer num) {
         log.info("test04 num={}", num);
+    }
+
+    public void test05(String logStr, List<Long> ids) {
+        log.info("{} test05 ids={}", logStr, ids);
     }
 }

@@ -1,5 +1,6 @@
 package com.xh.easy.trafficreplay.service.util;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 /**
@@ -26,5 +27,9 @@ public class ClassWrapper {
         method.setAccessible(true);
 
         return method;
+    }
+
+    public static <T extends Annotation> T getDeclaredAnnotation(Method method, Class<T> annotationClass) {
+        return method.getDeclaredAnnotation(annotationClass);
     }
 }
