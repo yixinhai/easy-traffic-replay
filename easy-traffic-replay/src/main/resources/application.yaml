@@ -6,7 +6,8 @@ replay:
   methods:
 #    - com.xh.easy.trafficreplay.service.test.TestAssemble#test01()
 #    - com.xh.easy.trafficreplay.service.test.TestAssemble#test02(java.lang.String)
-    - com.xh.easy.trafficreplay.service.test.TestAssemble#test03(java.lang.String, com.xh.easy.trafficreplay.service.test.Test)
+#    - com.xh.easy.trafficreplay.service.test.TestAssemble#test03(java.lang.String, com.xh.easy.trafficreplay.service.test.Test)
+    - com.xh.easy.trafficreplay.service.test.TestAssemble#test06(java.lang.String, java.util.List, com.xh.easy.trafficreplay.service.test.Test)
 #    - com.xh.easy.trafficreplay.service.test.TestAssemble#test04(java.lang.Integer)
 #    - com.xh.easy.trafficreplay.service.test.TestAssemble#test05(java.lang.String, java.util.List)
 #    - com.xh.easy.trafficreplay.service.test.TestPOJO#test01()

@@ -11,16 +11,7 @@ import java.util.List;
  *
  * @author yixinhai
  */
-public class PrimitiveTransformer extends ParamTransformer {
-
-    private static final PrimitiveTransformer INSTANCE = new PrimitiveTransformer();
-
-    private PrimitiveTransformer() {
-    }
-
-    public static PrimitiveTransformer getInstance() {
-        return INSTANCE;
-    }
+public class PrimitiveTransformer extends MethodParamTransformer {
 
     @Override
     public boolean supports(ParameterInfo parameterInfo) {

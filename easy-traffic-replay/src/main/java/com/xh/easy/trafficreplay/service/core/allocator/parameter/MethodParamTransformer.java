@@ -1,5 +1,6 @@
 package com.xh.easy.trafficreplay.service.core.allocator.parameter;
 
+import com.xh.easy.trafficreplay.service.core.allocator.ParamTransformer;
 import com.xh.easy.trafficreplay.service.model.ParameterInfo;
 
 import java.util.List;
@@ -9,11 +10,11 @@ import java.util.List;
  *
  * @author yixinhai
  */
-public abstract class ParamTransformer {
+public abstract class MethodParamTransformer implements ParamTransformer {
 
-    protected ParamTransformer next;
+    private MethodParamTransformer next;
 
-    protected void setNext(ParamTransformer next) {
+    protected void setNext(MethodParamTransformer next) {
         this.next = next;
     }
 
@@ -25,7 +26,8 @@ public abstract class ParamTransformer {
      * @throws Exception
      *     转换异常
      */
-    protected List<Object> doTransform(ParameterInfo parameterInfo) throws Exception {
+    @Override
+    public List<Object> doTransform(ParameterInfo parameterInfo) throws Exception {
         return this.supports(parameterInfo) ? this.transform(parameterInfo) : next.doTransform(parameterInfo);
     }
 

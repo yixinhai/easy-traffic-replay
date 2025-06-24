@@ -21,16 +21,7 @@ import static com.xh.easy.trafficreplay.service.constant.LogStrConstant.LOG_STR;
  * @author yixinhai
  */
 @Slf4j
-public class AnnotatedObjectTransformer extends ParamTransformer {
-
-    private static final AnnotatedObjectTransformer INSTANCE = new AnnotatedObjectTransformer();
-
-    private AnnotatedObjectTransformer() {
-    }
-
-    public static AnnotatedObjectTransformer getInstance() {
-        return INSTANCE;
-    }
+public class ObjectTransformer extends MethodParamTransformer {
 
     @Override
     public boolean supports(ParameterInfo parameterInfo) {
@@ -42,8 +33,6 @@ public class AnnotatedObjectTransformer extends ParamTransformer {
     public List<Object> transform(ParameterInfo parameterInfo) throws Exception {
 
         List<Object> args = new ArrayList<>();
-        Class<?> targetType = parameterInfo.getTargetType();
-        String methodName = parameterInfo.getMethodName();
         Class<?> parameterClass = parameterInfo.getParameterType();
 
         // 创建对象实例
@@ -51,29 +40,44 @@ public class AnnotatedObjectTransformer extends ParamTransformer {
         args.add(instance);
 
         // 处理对象字段
+        args.addAll(transformFields(instance, parameterInfo));
+
+        return args;
+    }
+
+    /**
+     * 获取对象字段值
+     */
+    private List<Object> transformFields(Object o, ParameterInfo parameterInfo) {
+
+        List<Object> args = new ArrayList<>();
+        Class<?> parameterClass = parameterInfo.getParameterType();
+
+        // 处理对象字段
         for (Field field : parameterClass.getDeclaredFields()) {
-            ParameterValue parameterValue = field.getDeclaredAnnotation(ParameterValue.class);
-
-            if (Objects.isNull(parameterValue)) {
-                continue;
-            }
-
             try {
-                instance = BeanUtil.deepCopy(instance, parameterClass);
+                ParameterValue parameterValue = field.getDeclaredAnnotation(ParameterValue.class);
+
+                if (Objects.isNull(parameterValue)) {
+                    continue;
+                }
+
+                o = BeanUtil.deepCopy(o, parameterClass);
                 Class<?> fieldType = field.getType();
                 String value = parameterValue.value();
                 field.setAccessible(true);
 
                 if (PrimitiveUtil.isPrimitive(fieldType)) {
-                    field.set(instance, getPrimitiveValue(fieldType, value));
+                    field.set(o, getPrimitiveValue(fieldType, value));
                 } else {
-                    field.set(instance, getEntityValue(fieldType, value));
+                    field.set(o, getEntityValue(fieldType, value));
                 }
 
-                args.add(instance);
+                args.add(o);
             } catch (Exception e) {
                 log.error("{} Failed to set field value. Class:{} Method:{} Argument:{} Field:{}", LOG_STR,
-                    targetType.getName(), methodName, parameterInfo.getParameter(), field.getName(), e);
+                    parameterInfo.getTargetType().getName(), parameterInfo.getMethodName(),
+                    parameterInfo.getParameter(), field.getName(), e);
             }
         }
 

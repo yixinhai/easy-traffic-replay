@@ -7,8 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.xh.easy.trafficreplay.service.constant.LogStrConstant.LOG_STR;
 
 /**
  * 参数分配器
@@ -18,7 +20,7 @@ import java.util.List;
 @Slf4j
 public class ParameterAllocator extends Allocator {
 
-    private final ParamTransformer transformer;
+    private final MethodParamTransformer transformer;
     private boolean hasAllocated = false;
     private Object[] args;
 
@@ -34,26 +36,15 @@ public class ParameterAllocator extends Allocator {
     /**
      * 初始化责任链列表
      */
-    private ParamTransformer initializeTransformers() {
-
-        ParamTransformer jsonTransformer = JsonTransformer.getInstance();
-        ParamTransformer logStrTransformer = LogStrTransformer.getInstance();
-        ParamTransformer primitiveTransformer = PrimitiveTransformer.getInstance();
-        ParamTransformer annotatedObjectTransformer = AnnotatedObjectTransformer.getInstance();
-
-        // 按优先级排序
-        jsonTransformer.setNext(logStrTransformer);
-        logStrTransformer.setNext(primitiveTransformer);
-        primitiveTransformer.setNext(annotatedObjectTransformer);
-
-        return jsonTransformer;
+    private MethodParamTransformer initializeTransformers() {
+        return TransformerBuilder.build();
     }
 
     /**
      * 分配参数
      */
     @Override
-    public void allocate() throws Exception {
+    public void allocate() {
         Parameter[] parameters = methodInfo.getMethod().getParameters();
         if (parameters == null || parameters.length == 0) {
             this.allocateComplete();
@@ -62,20 +53,25 @@ public class ParameterAllocator extends Allocator {
 
         this.args = new Object[parameters.length];
 
-        for (int i = 0; i < parameters.length; i++) {
-            Parameter parameter = parameters[i];
-
+        for (int i = 0; i < args.length; i++) {
             // 分配参数值
-            Iterator<Object> argumentIterator = transformer.doTransform(new ParameterInfo(methodInfo, parameter))
-                .iterator();
-            while (argumentIterator.hasNext()) {
-                args[i] = argumentIterator.next();
+            for (Object o : doAllocate(parameters[i])) {
+                args[i] = o;
                 this.allocateComplete();
             }
         }
 
         if (!this.hasAllocated) {
             this.allocateComplete();
+        }
+    }
+
+    private List<Object> doAllocate(Parameter parameter) {
+        try {
+            return transformer.doTransform(new ParameterInfo(methodInfo, parameter));
+        } catch (Exception e) {
+            log.warn("{} Failed to allocate parameter for method: {}", LOG_STR, methodInfo, e);
+            return new ArrayList<>(0);
         }
     }
 
