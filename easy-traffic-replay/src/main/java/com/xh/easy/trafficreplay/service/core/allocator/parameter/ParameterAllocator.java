@@ -66,9 +66,9 @@ public class ParameterAllocator extends Allocator {
         }
 
         if (jsonTransformer.supports(methodInfo)) {
-            methodAllocate(parameters);
-        } else {
             jsonAllocate();
+        } else {
+            methodAllocate(parameters);
         }
     }
 
