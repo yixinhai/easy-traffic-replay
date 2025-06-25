@@ -53,6 +53,10 @@ public class ParameterInfo {
         return methodHandler.getMethod();
     }
 
+    public MethodHandler getMethodHandler() {
+        return methodHandler;
+    }
+
     public String getMethodName() {
     	return getMethod().getName();
     }

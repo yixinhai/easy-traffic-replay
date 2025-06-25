@@ -1,6 +1,6 @@
-package com.xh.easy.trafficreplay.service.core.allocator.parameter;
+package com.xh.easy.trafficreplay.service.core.allocator.parameter.method;
 
-import com.xh.easy.trafficreplay.service.core.allocator.ParamTransformer;
+import com.xh.easy.trafficreplay.service.core.allocator.parameter.ParamTransformer;
 import com.xh.easy.trafficreplay.service.model.ParameterInfo;
 
 import java.util.List;

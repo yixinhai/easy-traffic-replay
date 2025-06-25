@@ -1,8 +1,13 @@
 package com.xh.easy.trafficreplay.service.core.allocator.parameter;
 
+import com.xh.easy.trafficreplay.service.annotation.ParameterJSON;
 import com.xh.easy.trafficreplay.service.core.allocator.Allocator;
+import com.xh.easy.trafficreplay.service.core.allocator.parameter.json.JsonParamTransformer;
+import com.xh.easy.trafficreplay.service.core.allocator.parameter.method.MethodParamTransformer;
+import com.xh.easy.trafficreplay.service.core.allocator.parameter.method.TransformerBuilder;
 import com.xh.easy.trafficreplay.service.core.handler.MethodInfo;
 import com.xh.easy.trafficreplay.service.model.ParameterInfo;
+import com.xh.easy.trafficreplay.service.util.ClassWrapper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
@@ -21,12 +26,14 @@ import static com.xh.easy.trafficreplay.service.constant.LogStrConstant.LOG_STR;
 public class ParameterAllocator extends Allocator {
 
     private final MethodParamTransformer transformer;
+    private final JsonParamTransformer jsonTransformer;
     private boolean hasAllocated = false;
     private Object[] args;
 
     public ParameterAllocator(MethodInfo methodInfo) {
         super(methodInfo);
         this.transformer = initializeTransformers();
+        this.jsonTransformer = initializeJsonTransformers();
     }
 
     public static ParameterAllocator of(MethodInfo methodInfo) {
@@ -37,7 +44,14 @@ public class ParameterAllocator extends Allocator {
      * 初始化责任链列表
      */
     private MethodParamTransformer initializeTransformers() {
-        return TransformerBuilder.build();
+        return TransformerBuilder.buildMethodParamTransformer();
+    }
+
+    /**
+     * 初始化json参数转换器
+     */
+    private JsonParamTransformer initializeJsonTransformers() {
+        return TransformerBuilder.buildJsonParamTransformer();
     }
 
     /**
@@ -51,11 +65,31 @@ public class ParameterAllocator extends Allocator {
             return;
         }
 
+        if (jsonTransformer.supports(methodInfo)) {
+            methodAllocate(parameters);
+        } else {
+            jsonAllocate();
+        }
+    }
+
+    /**
+     * json参数分配
+     */
+    private void jsonAllocate() {
+        args = doAllocate(jsonTransformer, null).toArray();
+        allocateComplete();
+    }
+
+    /**
+     * 方法参数分配
+     */
+    private void methodAllocate(Parameter[] parameters) {
+
         this.args = new Object[parameters.length];
 
         for (int i = 0; i < args.length; i++) {
             // 分配参数值
-            for (Object o : doAllocate(parameters[i])) {
+            for (Object o : doAllocate(transformer, parameters[i])) {
                 args[i] = o;
                 this.allocateComplete();
             }
@@ -66,7 +100,7 @@ public class ParameterAllocator extends Allocator {
         }
     }
 
-    private List<Object> doAllocate(Parameter parameter) {
+    private List<Object> doAllocate(ParamTransformer transformer, Parameter parameter) {
         try {
             return transformer.doTransform(new ParameterInfo(methodInfo, parameter));
         } catch (Exception e) {

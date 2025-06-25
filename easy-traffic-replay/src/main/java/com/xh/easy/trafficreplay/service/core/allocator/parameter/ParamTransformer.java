@@ -1,4 +1,4 @@
-package com.xh.easy.trafficreplay.service.core.allocator;
+package com.xh.easy.trafficreplay.service.core.allocator.parameter;
 
 import com.xh.easy.trafficreplay.service.model.ParameterInfo;
 

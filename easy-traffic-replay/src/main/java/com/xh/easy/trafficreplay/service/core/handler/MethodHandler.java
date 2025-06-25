@@ -1,5 +1,8 @@
 package com.xh.easy.trafficreplay.service.core.handler;
 
+import com.xh.easy.trafficreplay.service.util.ClassWrapper;
+
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 /**
@@ -16,5 +19,9 @@ public abstract class MethodHandler implements MethodInvoker {
     @Override
     public Object invoke() throws Exception {
         return this.getMethod().invoke(this.getTarget());
+    }
+
+    public <T extends Annotation> T getAnnotation(Class<T> clazz) {
+        return ClassWrapper.getDeclaredAnnotation(getMethod(), clazz);
     }
 }

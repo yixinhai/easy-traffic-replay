@@ -39,8 +39,8 @@ public class TestAssemble {
         log.info("{} test05 ids={}", logStr, ids);
     }
 
-    @ParameterJSON(jsonValue = "{\"logStr\":\"logStr\",\"test\":{\"username\":\"yixinhai\",\"gender\":1}}")
-    public void test06(String logStr, List<Long> ids, Test test) {
+    @ParameterJSON(jsonValue = "{\"logStr\":\"yixinhai test\",\"ids\":[null,{\"username\":\"yixinhai\",\"age\":18}],\"test\":{\"username\":\"yixinhai\"}}")
+    public void test06(String logStr, List<Test> ids, Test test) {
         log.info("{} test06 ids={} test={}", logStr, ids, test);
     }
 }

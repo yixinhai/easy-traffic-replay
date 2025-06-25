@@ -1,4 +1,4 @@
-package com.xh.easy.trafficreplay.service.core.allocator.parameter;
+package com.xh.easy.trafficreplay.service.core.allocator.parameter.method;
 
 import com.xh.easy.trafficreplay.service.annotation.ParameterAllocation;
 import com.xh.easy.trafficreplay.service.annotation.ParameterValue;
