@@ -1,0 +1,47 @@
+<idea-plugin>
+    <id>com.xh.easy.trafficreplay.plugin</id>
+    <name>Easy Traffic Replay Plugin</name>
+    <version>1.0.0</version>
+    <vendor email="support@xh.com" url="https://github.com/xh/easy-traffic-replay">XH</vendor>
+
+    <description><![CDATA[
+    Easy Traffic Replay IDEA插件，提供以下功能：
+    1. 在Java方法上右键选择"注入方法"
+    2. 在右侧工具窗口中输入JSON数据
+    3. 通过API获取选择的方法和JSON数据
+    ]]></description>
+
+    <change-notes><![CDATA[
+    版本 1.0.0:
+    - 初始版本
+    - 支持方法右键菜单"注入方法"
+    - 支持JSON输入窗口
+    - 提供数据访问API
+    ]]></change-notes>
+
+    <!-- 支持的IDEA版本 -->
+    <idea-version since-build="231.0" until-build="241.*"/>
+
+    <!-- 插件依赖 -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- 工具窗口 -->
+        <toolWindow id="Traffic Replay" 
+                    secondary="false" 
+                    anchor="right" 
+                    factoryClass="com.xh.easy.trafficreplay.plugin.idea.ui.ToolWindowFactory"/>
+    </extensions>
+
+    <actions>
+        <!-- 右键菜单动作 -->
+        <action id="InjectMethodAction" 
+                class="com.xh.easy.trafficreplay.plugin.idea.action.InjectMethodAction" 
+                text="注入方法" 
+                description="选择此方法进行流量回放注入">
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </action>
+    </actions>
+
+</idea-plugin> 
