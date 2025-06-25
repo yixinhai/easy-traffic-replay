@@ -72,8 +72,7 @@ service/
 ```
 
 #### 3. Service 核心类图
-![image](https://github.com/user-attachments/assets/271ff48d-4254-4229-ac55-c3de4c0ee75a)
-
+![image](https://github.com/user-attachments/assets/ee260f3c-72b8-418d-9f47-aad4eb64706a)
 
 ### 1. 核心功能
 
