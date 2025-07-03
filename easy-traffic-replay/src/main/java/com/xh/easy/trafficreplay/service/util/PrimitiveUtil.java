@@ -31,6 +31,16 @@ public class PrimitiveUtil {
     }
 
     /**
+     * 判断是否是基本类型
+     *
+     * @param type 基本类型的名称
+     * @return 是否为基本类型
+     */
+    public static boolean isPrimitive(String type) {
+        return PrimitiveType.of(type) != null;
+    }
+
+    /**
      * 获取基本类型的默认值
      *
      * @param type 基本类型Class对象
@@ -38,6 +48,17 @@ public class PrimitiveUtil {
      */
     public static Object getDefaultValue(Class<?> type) {
         return Objects.equals(type, Boolean.TYPE) ? false : 0;
+    }
+
+    /**
+     * 获取基本类型的默认值
+     *
+     * @param type 基本类型的名称
+     * @return 基本类型的默认值
+     */
+    public static Object getDefaultValue(String type) {
+        PrimitiveType primitiveType = PrimitiveType.of(type);
+        return primitiveType == null ? null : getDefaultValue(primitiveType.primitiveType);
     }
 
     /**
@@ -57,24 +78,37 @@ public class PrimitiveUtil {
         return primitiveType.converter.apply(value);
     }
 
+    /**
+     * 获取基本类型的包装类型
+     *
+     * @param type
+     *     基本类型Class名称
+     * @return 基本类型的包装类型
+     */
+    public static Class<?> parsePrimitive(String type) {
+        PrimitiveType primitiveType = PrimitiveType.of(type);
+        return primitiveType == null ? null : primitiveType.primitiveType;
+    }
 
     private enum PrimitiveType {
-        INTEGER(int.class, Integer.class, Integer::parseInt),
-        LONG(long.class, Long.class, Long::parseLong),
-        FLOAT(float.class, Float.class, Float::parseFloat),
-        DOUBLE(double.class, Double.class, Double::parseDouble),
-        BOOLEAN(boolean.class, Boolean.class, Boolean::parseBoolean),
-        CHAR(char.class, Character.class, s -> s.charAt(0)),
-        BYTE(byte.class, Byte.class, Byte::parseByte),
-        SHORT(short.class, Short.class, Short::parseShort);
+        INTEGER(int.class, Integer.class, "int", Integer::parseInt),
+        LONG(long.class, Long.class, "long", Long::parseLong),
+        FLOAT(float.class, Float.class, "float", Float::parseFloat),
+        DOUBLE(double.class, Double.class, "double", Double::parseDouble),
+        BOOLEAN(boolean.class, Boolean.class, "boolean", Boolean::parseBoolean),
+        CHAR(char.class, Character.class, "char", s -> s.charAt(0)),
+        BYTE(byte.class, Byte.class, "byte", Byte::parseByte),
+        SHORT(short.class, Short.class, "short", Short::parseShort);
 
         private final Class<?> primitiveType;
         private final Class<?> wrapperType;
+        private final String name;
         private final Function<String, ?> converter;
 
-        PrimitiveType(Class<?> primitiveType, Class<?> wrapperType, Function<String, ?> converter) {
+        PrimitiveType(Class<?> primitiveType, Class<?> wrapperType, String name, Function<String, ?> converter) {
             this.primitiveType = primitiveType;
             this.wrapperType = wrapperType;
+            this.name = name;
             this.converter = converter;
         }
 
@@ -91,6 +125,27 @@ public class PrimitiveUtil {
 
             for (PrimitiveType primitiveType : values()) {
                 if (primitiveType.primitiveType.equals(type) || primitiveType.wrapperType.equals(type)) {
+                    return primitiveType;
+                }
+            }
+
+            return null;
+        }
+
+        /**
+         * 获取基本类型的枚举
+         *
+         * @param name
+         *     基本类型的名称
+         * @return 基本类型的枚举
+         */
+        public static PrimitiveType of(String name) {
+            if (name == null) {
+                return null;
+            }
+
+            for (PrimitiveType primitiveType : values()) {
+                if (primitiveType.name.equals(name)) {
                     return primitiveType;
                 }
             }

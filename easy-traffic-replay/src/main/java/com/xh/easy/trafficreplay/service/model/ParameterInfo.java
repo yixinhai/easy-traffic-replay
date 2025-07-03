@@ -68,4 +68,9 @@ public class ParameterInfo {
     public Class<?> getTargetType() {
     	return methodHandler.getTarget().getClass();
     }
+
+    @Override
+    public String toString() {
+        return "ParameterInfo{" + "methodHandler=" + methodHandler + ", parameter=" + parameter + '}';
+    }
 }

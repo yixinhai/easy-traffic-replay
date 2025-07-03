@@ -3,6 +3,7 @@ package com.xh.easy.trafficreplay.service.manager;
 import com.xh.easy.trafficreplay.service.core.handler.MethodInfo;
 import com.xh.easy.trafficreplay.service.model.MethodSignature;
 import com.xh.easy.trafficreplay.service.util.ClassWrapper;
+import com.xh.easy.trafficreplay.service.util.PrimitiveUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -176,7 +177,7 @@ public class MethodManager {
             Class<?>[] paramTypes = Arrays.stream(signature.getParamTypes())
                 .map(paramType -> {
                     try {
-                        return Class.forName(paramType);
+                        return ClassWrapper.forName(paramType);
                     } catch (ClassNotFoundException e) {
                         log.error("{} Parameter type not found: {}", LOG_STR, paramType);
                         return null;

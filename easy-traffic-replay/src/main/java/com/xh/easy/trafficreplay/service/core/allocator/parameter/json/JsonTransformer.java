@@ -7,11 +7,12 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xh.easy.trafficreplay.service.manager.SerializerManager;
-import com.xh.easy.trafficreplay.service.util.serialze.JsonUtil;
+import com.xh.easy.trafficreplay.service.util.PrimitiveUtil;
+import com.xh.easy.trafficreplay.service.util.serialze.JsonWrapper;
 import com.xh.easy.trafficreplay.service.util.serialze.Serializer;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
-import org.springframework.core.StandardReflectionParameterNameDiscoverer;
 
 import static com.xh.easy.trafficreplay.service.constant.LogStrConstant.LOG_STR;
 
@@ -28,7 +29,7 @@ public class JsonTransformer {
 
     public JsonTransformer() {
         this.serializer = SerializerManager.jsonSerializer();
-        this.discoverer = new StandardReflectionParameterNameDiscoverer();
+        this.discoverer = new LocalVariableTableParameterNameDiscoverer();
     }
 
     /**
@@ -39,40 +40,69 @@ public class JsonTransformer {
      * @return 参数实例列表
      */
     public List<Object> transform(Method method, String data) {
-        Type[] parameterTypes = method.getGenericParameterTypes();
-        String[] parameterNames = discoverer.getParameterNames(method);
-        assert parameterNames != null;
+        return transform(method.getGenericParameterTypes(), discoverer.getParameterNames(method), JsonWrapper.of(data));
+    }
 
-
+    /**
+     * 获取参数列表
+     *
+     * @param parameterTypes 参数类型列表
+     * @param parameterNames 参数名称列表
+     * @param json json包装类
+     * @return json转换后的参数列表
+     */
+    private List<Object> transform(Type[] parameterTypes, String[] parameterNames, JsonWrapper json) {
         List<Object> result = new ArrayList<>();
 
         for (int i = 0; i < parameterTypes.length; i++) {
             try {
-
-                // json中不存在该参数赋值null
-                if (!JsonUtil.contains(data, parameterNames[i])) {
-                    result.add(null);
-                    continue;
-                }
-
-                Object arg = null;
-                Object jsonValue = JsonUtil.get(data, parameterNames[i]);
-
-                if (jsonValue instanceof JSONObject) {
-                    arg = serializer.deserialize(jsonValue.toString(), parameterTypes[i]);
-                } else {
-                    arg = jsonValue;
-                }
-
-                result.add(arg);
+                result.add(transformParam(parameterTypes[i], parameterNames[i], json));
             } catch (Exception e) {
                 log.warn("{} Failed to transform json to parameter", LOG_STR, e);
-                return null;
+                return new ArrayList<>(0);
             }
         }
 
         return result;
     }
 
+    /**
+     * 获取参数列表
+     *
+     * @param paramType 参数类型列表
+     * @param paramName 参数名称列表
+     * @param json json包装类
+     * @return json转换后的参数
+     */
+    private Object transformParam(Type paramType, String paramName, JsonWrapper json) {
+        return json.contains(paramName) ? transformExistParam(paramType, json.get(paramName))
+            : transformNotExistParam(paramType);
+    }
 
+    /**
+     * 获取未在json出现的参数默认值
+     * 【规则】基本类型：false 或 0；引用类型：null
+     *
+     * @param paramType 参数类型
+     * @return 参数默认值
+     */
+    private Object transformNotExistParam(Type paramType) {
+        return PrimitiveUtil.getDefaultValue(paramType.getTypeName());
+    }
+
+    /**
+     * 获取json中存在的参数值，反序列化为目标类型对象
+     *
+     * @param paramType 参数类型
+     * @param jsonValue json参数值
+     * @return 反序列化后的对象
+     */
+    private Object transformExistParam(Type paramType, Object jsonValue) {
+
+        if (jsonValue instanceof JSONObject) {
+            return serializer.deserialize(((JSONObject)jsonValue).toJSONString(), paramType);
+        }
+
+        return jsonValue;
+    }
 }

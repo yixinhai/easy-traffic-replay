@@ -110,4 +110,10 @@ public class MethodSignature {
             return null;
         }
     }
+
+    @Override
+    public String toString() {
+        return "MethodSignature{" + "className='" + className + '\'' + ", methodName='" + methodName + '\'' + ", paramTypes=" + Arrays.toString(
+            paramTypes) + '}';
+    }
 }

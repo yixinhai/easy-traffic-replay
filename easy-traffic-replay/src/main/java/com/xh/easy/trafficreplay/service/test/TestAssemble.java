@@ -18,6 +18,8 @@ public class TestAssemble {
      * com.xh.easy.trafficreplay.service.test.TestAssemble#test03(java.lang.String, com.xh.easy.trafficreplay.service.test.Test)
      * com.xh.easy.trafficreplay.service.test.TestAssemble#test05(java.lang.String, java.util.List)
      * com.xh.easy.trafficreplay.service.test.TestAssemble#test06(java.lang.String, java.util.List, com.xh.easy.trafficreplay.service.test.Test)
+     * com.xh.easy.trafficreplay.service.test.TestAssemble#test06(java.lang.String, java.util.List, com.xh.easy.trafficreplay.service.test.Test, int)
+     * com.xh.easy.trafficreplay.service.test.TestAssemble#test06(java.lang.String, java.util.List, com.xh.easy.trafficreplay.service.test.Test, int)
      */
     public void test01() {
         log.info("test01");
@@ -40,7 +42,7 @@ public class TestAssemble {
     }
 
     @ParameterJSON(jsonValue = "{\"logStr\":\"yixinhai test\",\"ids\":[null,{\"username\":\"yixinhai\",\"age\":18}],\"test\":{\"username\":\"yixinhai\"}}")
-    public void test06(String logStr, List<Test> ids, Test test) {
+    public void test06(String logStr, List<Test> ids, Test test, int age) {
         log.info("{} test06 ids={} test={}", logStr, ids, test);
     }
 }
